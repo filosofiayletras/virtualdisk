@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style type="text/css">
+				html, body
+				{
+					background-color: #2196F3;
+					height: 98%;
+					overflow: hidden;
+				}
+				
+				#textbox
+				{
+					margin: auto;
+					text-align: center;
+				}
+				
+				label
+				{
+					padding: 5px 8px;
+					outline: none;
+					text-shadow: inset 1px 1px #fff;
+					font-weight: 700;
+					font-size: 10pt;
+					color: white;
+				}
+				
+				input
+				{
+					margin: 2px auto;
+				}
+				
+				input:not([type=submit]):not([type=file])
+				{
+					border: 5px solid white; 
+					box-shadow: 
+					inset 0 0 8px  rgba(0,0,0,0.1),
+					0 0 16px rgba(0,0,0,0.1); 
+					padding: 5px;
+					background: rgba(255,255,255,0.5);
+					margin: 0 0 10px 0;
+					width: 90%;
+				}
+				
+				input[type=file]::-webkit-file-upload-button
+				{
+					visibility: hidden;
+				}
+				
+				input[type=file]::before
+				{
+					content: 'Seleccionar';
+					display: inline-block;
+					background: -webkit-linear-gradient(top, #f9f9f9, #e3e3e3);
+					border: 1px solid #999;
+					border-radius: 3px;
+					padding: 5px 8px;
+					outline: none;
+					white-space: nowrap;
+					-webkit-user-select: none;
+					cursor: pointer;
+					text-shadow: 1px 1px #fff;
+					font-weight: 700;
+					font-size: 10pt;
+				}
+				
+				input[type=file]:hover::before
+				{
+					border-color: black;
+				}
+				
+				input[type=file]:active::before
+				{
+					background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+				}
+				
+				input[type=submit]
+				{
+					display: block;
+					background: -webkit-linear-gradient(top, #f9f9f9, #e3e3e3);
+					border: 1px solid #999;
+					border-radius: 3px;
+					padding: 5px 8px;
+					outline: none;
+					white-space: nowrap;
+					-webkit-user-select: none;
+					cursor: pointer;
+					text-shadow: 1px 1px #fff;
+					font-weight: 700;
+					font-size: 10pt;
+				}
+				
+				input[type=submit]:hover
+				{
+					border-color: black;
+				}
+				
+				input[type=submit]:active
+				{
+					background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+				}
+				
+				#izda
+				{
+					float: left;
+					width: 35%;
+					vertical-align: middle;
+					text-align: center;
+				}
+				
+				#izda img
+				{
+					display: inline;
+					margin: auto;
+					text-align: center;
+					vertical-align: middle;
+					width: 45%;
+				}
+				
+				#dcha
+				{
+					float: right;
+					width: 45%;
+					margin-right: 15%;
+					border-left: 2px solid white;
+					height: 100%;
+				}
+				
+				#dcha form
+				{
+					margin: 10% auto;
+					text-align: center;
+				}
+				
+				#footer
+				{
+					clear: both;
+				}
+		</style>
+	</head>
+	<body>
+		<div id="izda">
+			<img src="http://upload.wikimedia.org/wikipedia/commons/9/9b/Logo_of_Google_Drive.png" alt="Drive logo" />
+		</div>
+		<div id="dcha">
+			<form action="driveauthcode" method="post">
+				<label for="authcode">Pulsa <a href="{{url}}">aquí</a> e introduce el código abajo.</label>
+				<input type="text" name="authcode">
+				<input type="submit" value="Enviar">
+			</form>
+		</div>
+		<div id="footer"></div>
+	</body>
+</html>
