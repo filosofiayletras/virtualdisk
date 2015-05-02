@@ -15,7 +15,6 @@
 					list-style-type: none;
 					padding: 0 0 0 10%;
 					margin: 0;
-					overflow: auto;
 				}
 				
 				#lista li
@@ -74,6 +73,9 @@
 					width: 35%;
 					vertical-align: middle;
 					text-align: center;
+					position: fixed;
+					height: 98%;
+					border-right: 2px solid white;
 				}
 				
 				#izda img
@@ -90,7 +92,6 @@
 					float: right;
 					width: 45%;
 					margin-right: 15%;
-					border-left: 2px solid white;
 					height: 100%;
 				}
 				
@@ -155,6 +156,7 @@
 					$(".spinner").remove();
 					$("#izda").css("display", "block");
 					$("#dcha").css("display", "block");
+					$("body").css("overflow", "auto");
 					$("#lista").html(lista);
 				});
 			});

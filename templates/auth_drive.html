@@ -124,6 +124,7 @@
 					margin-right: 15%;
 					border-left: 2px solid white;
 					height: 100%;
+					text-align: center;
 				}
 				
 				#dcha form
@@ -137,13 +138,47 @@
 					clear: both;
 				}
 		</style>
+		<script language="javascript" src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+		<script language="javascript">
+			$(document).ready(function()
+			{
+				$("#formulario").submit(function(e)
+				{
+					var postData = $(this).serializeArray();
+					var formURL = $(this).attr("action");
+					$.ajax(
+					{
+						url : formURL,
+						type: "POST",
+						data : postData,
+						success: function(data, textStatus, jqXHR)
+						{
+							$("#dcha").html(
+							"<span style=\"position: relative; top: 45%;font-size: 90px; color: #76FF03;\">&#x2714;</span>"
+							);
+						},
+						error: function(jqXHR, textStatus, errorThrown)
+						{
+							$("#dcha").html(
+							"<span style=\"position: relative; top: 45%;font-size: 90px; color: #FFAB00;\">&#x26a0;</span>"
+							);
+						}          
+					});
+					
+					e.preventDefault();
+					e.unbind();
+					
+					return false;
+				});
+			});
+		</script>
 	</head>
 	<body>
 		<div id="izda">
 			<img src="http://upload.wikimedia.org/wikipedia/commons/9/9b/Logo_of_Google_Drive.png" alt="Drive logo" />
 		</div>
 		<div id="dcha">
-			<form action="driveauthcode" method="post">
+			<form id="formulario" action="driveauthcode" method="post">
 				<label for="authcode">Pulsa <a href="{{url}}">aquí</a> e introduce el código abajo.</label>
 				<input type="text" name="authcode">
 				<input type="submit" value="Enviar">
