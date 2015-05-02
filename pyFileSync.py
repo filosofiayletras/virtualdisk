@@ -67,7 +67,6 @@ def getDriveAuth():
 ##
 @app.route("/driveauthcode", methods=['POST'])
 def driveAuth():
-	global credentials
 	credentials = oadrive.step2_exchange(request.form['authcode'])
 	
 	driveauthfile = open('drivecredentials.txt', 'w')
@@ -75,6 +74,25 @@ def driveAuth():
 	driveauthfile.close()
 	
 	return '', 200
+
+@app.route("/get_drive_quota", methods=['GET'])
+def getDriveQuota():
+	global drivecredentials
+	global drive_service
+	
+	if (drive_service is None):
+		if (drivecredentials is None):
+			driveauthfile = open('drivecredentials.txt', 'r')
+			drivecredentials = Credentials.new_from_json(driveauthfile.read())
+			driveauthfile.close()
+
+		http = httplib2.Http()
+		http = drivecredentials.authorize(http)
+		drive_service = build('drive', 'v2', http=http)
+	
+	about = drive_service.about().get().execute()
+	
+	return json.dumps({'used': long(about['quotaBytesUsed']), 'total': long(about['quotaBytesTotal'])})
 
 ## Subir fichero a Drive.
 #  - POST
@@ -104,16 +122,17 @@ def savePostFile():
 		drive_service = build('drive', 'v2', http=http)
 
 	#Creamos el cuerpo del mensaje. Le pasamos la ruta al fichero.
-	media_body = MediaFileUpload('uploads/' + file.filename, mimetype='text/plain', resumable=True)
+	print file.content_type
+	media_body = MediaFileUpload('uploads/' + file.filename, mimetype=file.content_type, resumable=True)
 	
 	#Propiedades del fichero a subir.
 	body = {
 		'title': request.form['filename'],
-		'mimeType': 'text/plain'
+		'mimeType': file.content_type
 	}
 
 	#Realizamos la subida
-	drive_service.files().insert(body=body, media_body=media_body).execute()
+	drive_service.files().insert(body=body, media_body=media_body, convert=False).execute()
 	
 	return '', 200
 
