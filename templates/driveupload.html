@@ -168,7 +168,6 @@
 					});
 					
 					e.preventDefault();
-					e.unbind();
 					
 					return false;
 				});
@@ -180,10 +179,8 @@
 			<img src="http://upload.wikimedia.org/wikipedia/commons/9/9b/Logo_of_Google_Drive.png" alt="Drive logo" />
 		</div>
 		<div id="dcha">
-			<form id="formulario" action="upload_to_dropbox" method="post" enctype="multipart/form-data">
+			<form id="formulario" action="upload_to_drive" method="post" enctype="multipart/form-data">
 				<div id="textbox">
-					<label for="filename">Nombre del fichero</label>
-					<input type="text" name="filename" />
 					<input type="file" name="file" />
 					<input type="submit" value="Subir" />
 				</div>

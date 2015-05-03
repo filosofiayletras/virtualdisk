@@ -1,16 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+#Flask libraries
 from flask import *
-import os
-import httplib2
-import json
+
+#Google Drive
 from apiclient.discovery import build
 from apiclient.http import MediaFileUpload
 from oauth2client.client import OAuth2WebServerFlow, Credentials
 
+#Dropbox
+from dropbox import client, rest, session
+
+#Utilities
+import os
+import httplib2
+import json
+
 app = Flask(__name__)
 
+########################################################################
+#                            DRIVE CONFIG                              #
+########################################################################
 #Claves de autorización de la API
 DRIVE_CLIENT_ID     = '210795029530-u3sseqbnj7meedot38fbmbkoee3gof5t.apps.googleusercontent.com'
 DRIVE_CLIENT_SECRET = 'jI93TZc4-WrCJLQGb5sHG2p_'
@@ -25,8 +36,23 @@ oadrive = OAuth2WebServerFlow(DRIVE_CLIENT_ID, DRIVE_CLIENT_SECRET, DRIVE_OAUTH_
 drivecredentials = None
 drive_service    = None
 
+
 ########################################################################
-#                                WEB                                   #
+#                           DROPBOX CONFIG                             #
+########################################################################
+
+#Dropbox API keys
+DROPBOX_APP_KEY = 'qvkwb9hpaggsnac'
+DROPBOX_APP_SECRET = 'jlv4jmek1t6j0j1'
+DROPBOX_ACCESS_TYPE = 'app_folder'
+
+#Sesión Dropbox. Globales.
+dropbox_sess = session.DropboxSession(DROPBOX_APP_KEY, DROPBOX_APP_SECRET, DROPBOX_ACCESS_TYPE)
+dropbox_request_token = dropbox_sess.obtain_request_token()
+dropbox_client = None
+
+########################################################################
+#                            WEB DRIVE                                 #
 ########################################################################
 
 # Para configurar drive (autorizar).
@@ -35,20 +61,38 @@ def driveConfig():
 	url_autorizacion = oadrive.step1_get_authorize_url()
 	return render_template('auth_drive.html', url=url_autorizacion)
 
-@app.route("/upload")
-def uploadFile():
-	return render_template('upload.html')
+@app.route("/driveupload")
+def uploadDriveFile():
+	return render_template('driveupload.html')
 
 	
 @app.route('/drivelist')
 def driveList():
 	return render_template('drivelist.html')
-
-
-
+	
 
 ########################################################################
-##                               API                                   #
+#                           WEB DROPBOX                                #
+########################################################################
+
+# Para configurar Dropbox (autorizar).
+@app.route("/dropboxconfig")
+def DropboxAutentication():
+	global dropbox_request_token
+	dropbox_request_token = dropbox_sess.obtain_request_token()
+	url_autentication = dropbox_sess.build_authorize_url(dropbox_request_token)
+	return render_template('auth_dropbox.html', url=url_autentication)
+
+@app.route("/dropboxupload")
+def uploadDropboxFile():
+	return render_template('dropboxupload.html')
+	
+@app.route('/dropboxlist')
+def dropboxList():
+	return render_template('dropboxlist.html')
+
+########################################################################
+##                            DRIVE API                                #
 ########################################################################
 
 ## Obtener URL para autorizar.
@@ -65,7 +109,7 @@ def getDriveAuth():
 #     - authcode -> Código de autorización
 #  - Devuelve: 200 OK
 ##
-@app.route("/driveauthcode", methods=['POST'])
+@app.route("/save_drive_auth", methods=['POST'])
 def driveAuth():
 	credentials = oadrive.step2_exchange(request.form['authcode'])
 	
@@ -73,8 +117,12 @@ def driveAuth():
 	driveauthfile.write(credentials.to_json())
 	driveauthfile.close()
 	
-	return '', 200
+	return '{\'status\': \'ok\'}', 200
 
+## Obtener cuotas de Drive.
+#  - GET
+#  - Devuelve {'used': long, 'total': long}
+##
 @app.route("/get_drive_quota", methods=['GET'])
 def getDriveQuota():
 	global drivecredentials
@@ -96,8 +144,7 @@ def getDriveQuota():
 
 ## Subir fichero a Drive.
 #  - POST
-#     - filename -> Nombre que se le quiere dar al fichero al subirlo
-#     - file     -> Ruta al fichero
+#     - file -> Flujo de bytes del fichero
 #  - Devuelve: 200 OK
 ##
 @app.route('/upload_to_drive', methods=['POST'])
@@ -127,12 +174,15 @@ def savePostFile():
 	
 	#Propiedades del fichero a subir.
 	body = {
-		'title': request.form['filename'],
+		'title': file.filename,
 		'mimeType': file.content_type
 	}
 
 	#Realizamos la subida
 	drive_service.files().insert(body=body, media_body=media_body, convert=False).execute()
+	
+	#Borramos el temporal
+	os.remove(os.path.join('uploads/', file.filename))
 	
 	return '', 200
 
@@ -197,7 +247,142 @@ def getDriveList():
 		}])
       
 	return json.dumps(respuesta)	
+
+
+########################################################################
+##                            DROPBOX API                              #
+########################################################################
+
+## Obtener URL para autorizar.
+#  - GET
+#  - Devuelve: JSON = { 'url': url_autorizacion };
+##
+@app.route("/get_dropbox_auth", methods=['GET'])
+def getDropboxAuth():
+	global dropbox_sess
+	global dropbox_request_token
 	
+	dropbox_request_token = dropbox_sess.obtain_request_token()
+	url_autorizacion = dropbox_sess.build_authorize_url(request_token)
+	return json.dumps('{\'url\': \'' + url_autorizacion + '\'}')
+
+## Recibir código de autorización.
+#  - POST
+#     - authcode -> Código de autorización
+#  - Devuelve: 200 OK
+##
+@app.route("/save_dropbox_auth")
+def dropboxAuth():
+	global dropbox_sess
+	global dropbox_client
+	global dropbox_request_token
+	access_token = dropbox_sess.obtain_access_token(dropbox_request_token)
+	
+	dropboxauthfile = open('dropboxcredentials.txt', 'w')
+	dropboxauthfile.write("%s;%s" % (access_token.key, access_token.secret))
+	dropboxauthfile.close()
+	
+	dropbox_sess.set_token(access_token.key, access_token.secret)
+	dropbox_client = client.DropboxClient(dropbox_sess)
+	
+	return '{\'status\': \'ok\'}', 200
+
+## Subir fichero a Dropbox.
+#  - POST
+#     - file -> Flujo de bytes del fichero
+#  - Devuelve: 200 OK
+##
+@app.route('/upload_to_dropbox', methods=['POST'])
+def uploadPostFileDropbox():
+	global dropbox_sess
+	global dropbox_client
+	
+	if (dropbox_client is None):
+		dropboxauthfile = open('dropboxcredentials.txt', 'r')
+		token_key, token_secret = dropboxauthfile.read().split(';')
+		dropboxauthfile.close()
+		
+		dropbox_sess.set_token(token_key, token_secret)
+		dropbox_client = client.DropboxClient(dropbox_sess)
+	
+	#Obtenemos el nombre del fichero, que pondremos temporalmente en
+	#nuestra carpeta uploads/.
+	file = request.files['file']
+	
+	#Subir fichero
+	response = dropbox_client.put_file('/' + file.filename, file)
+	
+	return '', 200
+	
+
+## Obtener lista de ficheros de Dropbox.
+#  - GET
+#  - Devuelve: JSON = [{
+#                         'id': path,
+#                         'filename': path (without /)
+#                         'link': path.url,
+#                         'size': size (bytes)
+#                      }];
+##
+@app.route("/get_dropbox_list",methods=['GET'])
+def getDropboxList():
+	global dropbox_sess
+	global dropbox_client
+	
+	if (dropbox_client is None):
+		dropboxauthfile = open('dropboxcredentials.txt', 'r')
+		token_key, token_secret = dropboxauthfile.read().split(';')
+		dropboxauthfile.close()
+		
+		dropbox_sess.set_token(token_key, token_secret)
+		dropbox_client = client.DropboxClient(dropbox_sess)
+
+	folder_metadata = dropbox_client.metadata('/')
+	respuesta = []
+
+	for elemento in folder_metadata['contents']:
+		if elemento['size'].find('bytes') != -1:
+			elemento['size'] = elemento['size'].replace('bytes','')
+			elemento['size'] = long(float(elemento['size']))
+		elif elemento['size'].find('KB') !=-1:
+			elemento['size'] = elemento['size'].replace('KB','')
+			elemento['size'] = long(float(elemento['size'])*1024)
+		elif elemento['size'].find('MB') !=-1:
+			elemento['size'] = elemento['size'].replace('MB','')
+			elemento['size'] = long(float(elemento['size'])*1048576)
+		elif elemento['size'].find('GB') !=-1:
+			elemento['size'] = elemento['size'].replace('MB','')
+			elemento['size'] = long(float(elemento['size'])*1073741824)
+		
+		
+		respuesta.extend([{
+			'id': elemento['path'],
+			'filename': elemento['path'].replace('/',''),
+			'link': dropbox_client.share(elemento['path'])['url'],
+			'size': elemento['size']
+		}])
+	
+	return json.dumps(respuesta)
+
+## Obtener cuotas de Dropbox.
+#  - GET
+#  - Devuelve {'used': long, 'total': long}
+##
+@app.route("/get_dropbox_quota")
+def getDropboxquote():
+	global dropbox_sess
+	global dropbox_client
+	
+	if (dropbox_client is None):
+		dropboxauthfile = open('dropboxcredentials.txt', 'r')
+		token_key, token_secret = dropboxauthfile.read().split(';')
+		dropboxauthfile.close()
+		
+		dropbox_sess.set_token(token_key, token_secret)
+		dropbox_client = client.DropboxClient(dropbox_sess)
+		
+	return json.dumps({'used': dropbox_client.account_info()['quota_info']['normal'], 'total' : dropbox_client.account_info()['quota_info']['quota']}) 
+
 
 if __name__ == "__main__":
 	app.run(debug=True)

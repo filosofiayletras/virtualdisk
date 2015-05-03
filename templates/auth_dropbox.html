@@ -142,37 +142,27 @@
 		</style>
 		<script language="javascript" src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
 		<script language="javascript">
-			$(document).ready(function()
+			var getauthcode = function()
 			{
-				$("#formulario").submit(function(e)
+				$.ajax(
 				{
-					var postData = $(this).serializeArray();
-					var formURL = $(this).attr("action");
-					$.ajax(
+					url : "save_dropbox_auth",
+					type: "GET",
+					data : "",
+					success: function(data, textStatus, jqXHR)
 					{
-						url : formURL,
-						type: "POST",
-						data : postData,
-						success: function(data, textStatus, jqXHR)
-						{
-							$("#dcha").html(
-							"<span style=\"position: relative; top: 45%;font-size: 90px; color: #76FF03;\">&#x2714;</span>"
-							);
-						},
-						error: function(jqXHR, textStatus, errorThrown)
-						{
-							$("#dcha").html(
-							"<span style=\"position: relative; top: 45%;font-size: 90px; color: #FFAB00;\">&#x26a0;</span>"
-							);
-						}          
-					});
-					
-					e.preventDefault();
-					e.unbind();
-					
-					return false;
+						$("#dcha").html(
+						"<span style=\"position: relative; top: 45%;font-size: 90px; color: #76FF03;\">&#x2714;</span>"
+						);
+					},
+					error: function(jqXHR, textStatus, errorThrown)
+					{
+						$("#dcha").html(
+						"<span style=\"position: relative; top: 45%;font-size: 90px; color: #FFAB00;\">&#x26a0;</span>"
+						);
+					}          
 				});
-			});
+			}
 		</script>
 	</head>
 	<body>
@@ -180,11 +170,14 @@
 			<img src="http://www.apfelwerk.de/htdocs/wordpress/wp-content/uploads/2012/08/dropbox.png" alt="Dropbox logo" />
 		</div>
 		<div id="dcha">
-			<form >
-			<a href={{url}}>
-				<input type="button" value="Autorizar" />
-			</a>
-			</form>
+			<div>
+				<a href={{url}}>
+					<input type="button" value="Pulsa aqu&iacute; para autorizar" />
+				</a>
+			</div>
+			<div>
+				<input type="submit" value="Confirmar autorizaci&oacute;n" onclick="getauthcode()" />
+			</div>
 		</div>
 		<div id="footer"></div>
 	</body>

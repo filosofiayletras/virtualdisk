@@ -168,7 +168,6 @@
 					});
 					
 					e.preventDefault();
-					e.unbind();
 					
 					return false;
 				});
@@ -182,8 +181,6 @@
 		<div id="dcha">
 			<form id="formulario" action="upload_to_dropbox" method="post" enctype="multipart/form-data">
 				<div id="textbox">
-					<label for="filename">Nombre del fichero</label>
-					<input type="text" name="filename" />
 					<input type="file" name="file" />
 					<input type="submit" value="Subir" />
 				</div>
