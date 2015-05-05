@@ -51,6 +51,14 @@ dropbox_sess = session.DropboxSession(DROPBOX_APP_KEY, DROPBOX_APP_SECRET, DROPB
 dropbox_request_token = dropbox_sess.obtain_request_token()
 dropbox_client = None
 
+
+########################################################################
+#                           WEB GLOBAL                                 #
+########################################################################
+@app.route("/")
+def home():
+	return render_template('upload.html')
+
 ########################################################################
 #                            WEB DRIVE                                 #
 ########################################################################
@@ -90,6 +98,26 @@ def uploadDropboxFile():
 @app.route('/dropboxlist')
 def dropboxList():
 	return render_template('dropboxlist.html')
+
+
+########################################################################
+##                           GLOBAL API                                #
+########################################################################
+@app.route("/automatic_upload", methods=['POST'])
+def automaticUpload():
+	drive_quota = json.loads(getDriveQuota())	
+	dropbox_quota = json.loads(getDropboxQuota())
+	
+	drive_libre = drive_quota['total'] - drive_quota['used']
+	dropbox_libre = dropbox_quota['total'] - dropbox_quota['used']
+	
+	if (drive_libre > dropbox_libre):
+		func = uploadToDrive
+	else:
+		func = uploadToDropbox
+	
+	return func()
+
 
 ########################################################################
 ##                            DRIVE API                                #
@@ -148,7 +176,7 @@ def getDriveQuota():
 #  - Devuelve: 200 OK
 ##
 @app.route('/upload_to_drive', methods=['POST'])
-def savePostFile():
+def uploadToDrive():
 	global drivecredentials
 	global drive_service
 	
@@ -293,7 +321,7 @@ def dropboxAuth():
 #  - Devuelve: 200 OK
 ##
 @app.route('/upload_to_dropbox', methods=['POST'])
-def uploadPostFileDropbox():
+def uploadToDropbox():
 	global dropbox_sess
 	global dropbox_client
 	
@@ -369,7 +397,7 @@ def getDropboxList():
 #  - Devuelve {'used': long, 'total': long}
 ##
 @app.route("/get_dropbox_quota")
-def getDropboxquote():
+def getDropboxQuota():
 	global dropbox_sess
 	global dropbox_client
 	
