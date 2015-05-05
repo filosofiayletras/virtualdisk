@@ -58,7 +58,12 @@ dropbox_client = None
 @app.route("/")
 def home():
 	return render_template('upload.html')
-
+	
+@app.route('/list')
+def Total_List():
+	return render_template('list.html')
+	
+	
 ########################################################################
 #                            WEB DRIVE                                 #
 ########################################################################
@@ -117,6 +122,25 @@ def automaticUpload():
 		func = uploadToDropbox
 	
 	return func()
+	
+
+## Obtener lista de ficheros de ambos servicios.
+#  - GET
+#  - Devuelve: JSON = [{
+#                         'id': path,
+#                         'filename': path (without /)
+#                         'link': path.url,
+#                         'size': size (bytes)
+#                      }];
+##
+@app.route("/get_list")
+def getlist():
+	dropbox_list=json.loads(getDropboxList())
+	drive_list=json.loads(getDriveList())
+	return json.dumps(dropbox_list + drive_list), 200
+	
+
+
 
 
 ########################################################################
