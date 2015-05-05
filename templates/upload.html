@@ -1,6 +1,4 @@
-<!--
 <!DOCTYPE html>
--->
 <html>
 	<head>
 		<style type="text/css">
@@ -41,7 +39,6 @@
 					padding: 5px;
 					background: rgba(255,255,255,0.5);
 					margin: 0 0 10px 0;
-					width: 90%;
 				}
 				
 				input[type=file]::-webkit-file-upload-button
@@ -131,8 +128,7 @@
 				
 				#dcha form
 				{
-					margin: 10% auto;
-					text-align: center;
+					margin-top: 10%;
 				}
 				
 				#footer
@@ -146,13 +142,17 @@
 			{
 				$("#formulario").submit(function(e)
 				{
-					var postData = $(this).serializeArray();
-					var formURL = $(this).attr("action");
-					$.ajax(
-					{
-						url : formURL,
-						type: "POST",
-						data : postData,
+					var formObj = $("#formulario");
+					var formURL = formObj.attr("action");
+					var formData = new FormData(this);
+					$.ajax({
+						url: formURL,
+						type: 'POST',
+						data:  formData,
+						mimeType:"multipart/form-data",
+						contentType: false,
+						cache: false,
+						processData:false,
 						success: function(data, textStatus, jqXHR)
 						{
 							$("#dcha").html(
@@ -179,10 +179,11 @@
 			<img src="http://upload.wikimedia.org/wikipedia/commons/9/9b/Logo_of_Google_Drive.png" alt="Drive logo" />
 		</div>
 		<div id="dcha">
-			<form id="formulario" action="save_drive_auth" method="post">
-				<label for="authcode">Pulsa<a href={{url}} target="_blank" onClick="window.open(this.href, this.target, 'width=800,height=800'); return false;">aquí</a> e introduce el código abajo.</label>
-				<input type="text" name="authcode">
-				<input type="submit" value="Enviar">
+			<form id="formulario" action="automatic_upload" method="post" enctype="multipart/form-data">
+				<div id="textbox">
+					<input type="file" name="file" />
+					<input type="submit" value="Subir" />
+				</div>
 			</form>
 		</div>
 		<div id="footer"></div>
