@@ -295,10 +295,30 @@ def getDriveList():
 			'id': elemento['id'],
 			'filename': elemento['title'],
 			'link': elemento['alternateLink'],
-			'size': elemento['fileSize']
+			'size': elemento['fileSize'],
+			'remove_link': 'remove_drive_file?id=' + elemento['id']
 		}])
       
-	return json.dumps(respuesta)	
+	return json.dumps(respuesta)
+	
+@app.route("/remove_drive_file", methods=['GET'])
+def removeDriveFile():
+	global drivecredentials
+	global drive_service
+	
+	if (drive_service is None):
+		if (drivecredentials is None):
+			driveauthfile = open('drivecredentials.txt', 'r')
+			drivecredentials = Credentials.new_from_json(driveauthfile.read())
+			driveauthfile.close()
+
+		http = httplib2.Http()
+		http = drivecredentials.authorize(http)
+		drive_service = build('drive', 'v2', http=http)
+
+	drive_service.files().delete(fileId=request.args.get('id')).execute()
+	
+	return '{\'status\': \'ok\'}', 200
 
 
 ########################################################################
@@ -411,7 +431,8 @@ def getDropboxList():
 			'id': elemento['path'],
 			'filename': elemento['path'].replace('/',''),
 			'link': dropbox_client.share(elemento['path'])['url'],
-			'size': elemento['size']
+			'size': elemento['size'],
+			'remove_link': 'remove_dropbox_file?id=' + elemento['path']
 		}])
 	
 	return json.dumps(respuesta)
@@ -435,6 +456,22 @@ def getDropboxQuota():
 		
 	return json.dumps({'used': dropbox_client.account_info()['quota_info']['normal'], 'total' : dropbox_client.account_info()['quota_info']['quota']}) 
 
+@app.route("/remove_dropbox_file", methods=['GET'])
+def removeDropboxFile():
+	global dropbox_sess
+	global dropbox_client
+	
+	if (dropbox_client is None):
+		dropboxauthfile = open('dropboxcredentials.txt', 'r')
+		token_key, token_secret = dropboxauthfile.read().split(';')
+		dropboxauthfile.close()
+		
+		dropbox_sess.set_token(token_key, token_secret)
+		dropbox_client = client.DropboxClient(dropbox_sess)
+		
+	dropbox_client.file_delete(request.args.get('id'))
+	
+	return '{\'status\':\'ok\'}', 200
 
 if __name__ == "__main__":
 	app.run(debug=True)
