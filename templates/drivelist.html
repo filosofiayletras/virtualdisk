@@ -1,138 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<style type="text/css">
-				html, body
-				{
-					background-color: #2196F3;
-					height: 98%;
-					overflow: hidden;
-				}
-				
-				#lista
-				{
-					width: 100%;
-					list-style-type: none;
-					padding: 0 0 0 10%;
-					margin: 0;
-				}
-				
-				#lista li
-				{
-					background-color: #BBDEFB;
-					padding: 15px;
-					margin: 2px 0;
-					border: 5px solid white; 
-					box-shadow: 
-					inset 0 0 8px  rgba(0,0,0,0.1),
-					0 0 16px rgba(0,0,0,0.1); 
-				}
-				
-				#lista li:hover
-				{
-					background-color: #E3F2FD;
-				}
-				
-				#lista li a:link, #lista li a:visited
-				{
-					text-decoration: none;
-					color: black;
-					font-weight: bold;
-				}
-				
-				#lista li a:hover
-				{
-					font-weight: bold;
-				}
-				
-				#lista li span
-				{
-					vertical-align:middle;
-				}
-				
-				.size
-				{
-					background-color: #795548;
-					border-radius: 5px;
-					margin-left: 25px;
-					padding: 5px;
-					color: white;
-					font-size: 9px;
-					font-weight: normal;
-					vertical-align: middle;
-				}
-				
-				.size::after
-				{
-					content: " bytes";
-				}
-				
-				#izda
-				{
-					float: left;
-					width: 35%;
-					vertical-align: middle;
-					text-align: center;
-					position: fixed;
-					height: 98%;
-					border-right: 2px solid white;
-				}
-				
-				#izda img
-				{
-					display: inline;
-					margin: auto;
-					text-align: center;
-					vertical-align: middle;
-					width: 45%;
-				}
-				
-				#dcha
-				{
-					float: right;
-					width: 45%;
-					margin-right: 15%;
-					height: 100%;
-				}
-				
-				#footer
-				{
-					clear: both;
-				}
-				
-				
-				
-				
-				/* Spinner */
-				.spinner {
-				  width: 100px;
-				  height: 100px;
-				  background-color: white;
-
-				  margin: 100px auto;
-				  -webkit-animation: rotateplane 1.2s infinite ease-in-out;
-				  animation: rotateplane 1.2s infinite ease-in-out;
-				}
-
-				@-webkit-keyframes rotateplane {
-				  0% { -webkit-transform: perspective(120px) }
-				  50% { -webkit-transform: perspective(120px) rotateY(180deg) }
-				  100% { -webkit-transform: perspective(120px) rotateY(180deg)  rotateX(180deg) }
-				}
-
-				@keyframes rotateplane {
-				  0% { 
-					transform: perspective(120px) rotateX(0deg) rotateY(0deg);
-					-webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg) 
-				  } 50% { 
-					transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
-					-webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg) 
-				  } 100% { 
-					transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
-					-webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
-				  }
-				}
-		</style>
+		<link rel="stylesheet" href="estilos.css" type="text/css" />
 		<script language="javascript" src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
 		<script language="javascript">
 			$(function()
@@ -140,7 +9,7 @@
 				$.getJSON("/get_drive_list", function(elementos)
 				{
 					var lista = "";
-					
+
 					for (var i = 0; i < elementos.length; ++i)
 					{
 						lista += "<li id=\"" + elementos[i].id
@@ -152,12 +21,12 @@
 							  +  elementos[i].size
 							  +  "</span></a></li>";
 					}
-					
+
 					$(".spinner").remove();
 					$("#izda").css("display", "block");
 					$("#dcha").css("display", "block");
 					$("body").css("overflow", "auto");
-					$("#lista").html(lista);
+					$("#listado").html(lista);
 				});
 			});
 		</script>
@@ -166,9 +35,19 @@
 		<div class="spinner"></div>
 		<div id="izda" style="display:none;">
 			<img src="http://upload.wikimedia.org/wikipedia/commons/9/9b/Logo_of_Google_Drive.png" alt="Drive logo" />
+			<ul class="lista">
+				<li><a href="/">Subida autom&aacute;tica</a></li>
+				<li><a href="/list">Listado</a></li>
+				<li><a href="/driveupload">Subir a Drive</a></li>
+				<li><a href="/drivelist">Listado de Drive</a></li>
+				<li><a href="/dropboxupload">Subir a Dropbox</a></li>
+				<li><a href="/dropboxlist">Listado de Dropbox</a></li>
+				<li><a href="/driveconfig">Configurar Drive (solo la primera vez)</a></li>
+				<li><a href="/dropboxconfig">Configurar Dropbox (solo la primera vez)</a></li>
+			</ul>
 		</div>
 		<div id="dcha" style="display:none;">
-			<ul id="lista">
+			<ul class="lista" id="listado">
 			</ul>
 		</div>
 		<div id="footer"></div>

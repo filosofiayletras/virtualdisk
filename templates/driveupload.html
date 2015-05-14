@@ -1,141 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<style type="text/css">
-				html, body
-				{
-					background-color: #2196F3;
-					height: 98%;
-					overflow: hidden;
-				}
-				
-				#textbox
-				{
-					margin: auto;
-					text-align: center;
-				}
-				
-				label
-				{
-					padding: 5px 8px;
-					outline: none;
-					text-shadow: inset 1px 1px #fff;
-					font-weight: 700;
-					font-size: 10pt;
-					color: white;
-				}
-				
-				input
-				{
-					margin: 2px auto;
-				}
-				
-				input:not([type=submit]):not([type=file])
-				{
-					border: 5px solid white; 
-					box-shadow: 
-					inset 0 0 8px  rgba(0,0,0,0.1),
-					0 0 16px rgba(0,0,0,0.1); 
-					padding: 5px;
-					background: rgba(255,255,255,0.5);
-					margin: 0 0 10px 0;
-				}
-				
-				input[type=file]::-webkit-file-upload-button
-				{
-					visibility: hidden;
-				}
-				
-				input[type=file]::before
-				{
-					content: 'Seleccionar';
-					display: inline-block;
-					background: -webkit-linear-gradient(top, #f9f9f9, #e3e3e3);
-					border: 1px solid #999;
-					border-radius: 3px;
-					padding: 5px 8px;
-					outline: none;
-					white-space: nowrap;
-					-webkit-user-select: none;
-					cursor: pointer;
-					text-shadow: 1px 1px #fff;
-					font-weight: 700;
-					font-size: 10pt;
-				}
-				
-				input[type=file]:hover::before
-				{
-					border-color: black;
-				}
-				
-				input[type=file]:active::before
-				{
-					background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
-				}
-				
-				input[type=submit]
-				{
-					display: block;
-					background: -webkit-linear-gradient(top, #f9f9f9, #e3e3e3);
-					border: 1px solid #999;
-					border-radius: 3px;
-					padding: 5px 8px;
-					outline: none;
-					white-space: nowrap;
-					-webkit-user-select: none;
-					cursor: pointer;
-					text-shadow: 1px 1px #fff;
-					font-weight: 700;
-					font-size: 10pt;
-				}
-				
-				input[type=submit]:hover
-				{
-					border-color: black;
-				}
-				
-				input[type=submit]:active
-				{
-					background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
-				}
-				
-				#izda
-				{
-					float: left;
-					width: 35%;
-					vertical-align: middle;
-					text-align: center;
-				}
-				
-				#izda img
-				{
-					display: inline;
-					margin: auto;
-					text-align: center;
-					vertical-align: middle;
-					width: 45%;
-				}
-				
-				#dcha
-				{
-					float: right;
-					width: 45%;
-					margin-right: 15%;
-					border-left: 2px solid white;
-					height: 100%;
-					text-align: center;
-				}
-				
-				#dcha form
-				{
-					margin-top: 10%;
-				}
-				
-				#footer
-				{
-					clear: both;
-				}
-		</style>
+		<link rel="stylesheet" href="estilos.css" type="text/css" />
 		<script language="javascript" src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
 		<script language="javascript">
 			$(document).ready(function()
@@ -164,11 +30,11 @@
 							$("#dcha").html(
 							"<span style=\"position: relative; top: 45%;font-size: 90px; color: #FFAB00;\">&#x26a0;</span>"
 							);
-						}          
+						}
 					});
-					
+
 					e.preventDefault();
-					
+
 					return false;
 				});
 			});
@@ -177,6 +43,16 @@
 	<body>
 		<div id="izda">
 			<img src="http://upload.wikimedia.org/wikipedia/commons/9/9b/Logo_of_Google_Drive.png" alt="Drive logo" />
+			<ul class="lista">
+				<li><a href="/">Subida autom&aacute;tica</a></li>
+				<li><a href="/list">Listado</a></li>
+				<li><a href="/driveupload">Subir a Drive</a></li>
+				<li><a href="/drivelist">Listado de Drive</a></li>
+				<li><a href="/dropboxupload">Subir a Dropbox</a></li>
+				<li><a href="/dropboxlist">Listado de Dropbox</a></li>
+				<li><a href="/driveconfig">Configurar Drive (solo la primera vez)</a></li>
+				<li><a href="/dropboxconfig">Configurar Dropbox (solo la primera vez)</a></li>
+			</ul>
 		</div>
 		<div id="dcha">
 			<form id="formulario" action="upload_to_drive" method="post" enctype="multipart/form-data">
