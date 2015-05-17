@@ -1,0 +1,14 @@
+Api Python (no oficial): https://github.com/mk-fg/python-onedrive.git
+OneDrive API: https://github.com/OneDrive/onedrive-api-docs.git
+Un gran problema que nos hemos encontrado con la api para Python es la falta de información en la documentación que ofrece. Ésta falta de información provocó un esfuerzo excesivo en el intento por entender dicha api mediante técnicas de acierto y error.
+Sin embargo, nuestro talón de Aquiles con la API llegó en el proceso de autenticación de la misma.
+Como podemos ver en la imagen, OneDrive nos devuelve un token tras la solicitud de acceso, el cual usaremos posteriormente para realizar las distintas solicitudes al servicio.
+
+
+---- IMAGEN ----
+(https://dev.onedrive.com/auth/msa_oauth.htm)
+
+Cuando solicitamos el token, se abre una nueva ventana en el navegador para autenticarnos y autorizar la conexión del servicio con la api, tras lo cual, se nos devuelve el token en la barra de direcciones. Y éste es el problema, cuando el servidor web es ejecutado de forma local, el token es devuelto en una ventana que no es de nuestro servidor web, ya que OneDrive no permite redireccionar a localhost. Esto nos impide recogerlo. Esta situación debería ser resuelta por la api de Python, pero no es el caso.
+En las distintas pruebas que se hicieron, si utilizamos un redireccionamiento a una web en la nube, entonces el token si es devuelto a nuestra página. 
+Tras demasiadas horas de trabajo dedicadas al aprendizaje de dicha api, se deshecha su uso por la restricción de no poderla usa en localhost.
+Ante estos problemas, tras consultar al profesor y viendo que el enunciado del ejercicio tan solo propone el uso de 2 APIs diferentes, se decide centrar los esfuerzos en la utilización de las APIs Dropbox y Google Drive, desechando el uso de Box y Microsoft OneDrive para una futura ampliación.
