@@ -1,149 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<style type="text/css">
-				html, body
-				{
-					background-color: #2196F3;
-					height: 98%;
-					overflow: hidden;
-				}
-				
-				#lista
-				{
-					width: 100%;
-					list-style-type: none;
-					padding: 0 0 0 10%;
-					margin: 0;
-				}
-				
-				#lista li
-				{
-					background-color: #BBDEFB;
-					padding: 15px;
-					margin: 2px 0;
-					border: 5px solid white; 
-					box-shadow: 
-					inset 0 0 8px  rgba(0,0,0,0.1),
-					0 0 16px rgba(0,0,0,0.1); 
-				}
-				
-				#lista li:hover
-				{
-					background-color: #E3F2FD;
-				}
-				
-				#lista li a:link, #lista li a:visited
-				{
-					text-decoration: none;
-					color: black;
-					font-weight: bold;
-				}
-				
-				#lista li a:hover
-				{
-					font-weight: bold;
-				}
-				
-				#lista li span
-				{
-					vertical-align:middle;
-				}
-				
-				.size
-				{
-					background-color: #795548;
-					border-radius: 5px;
-					margin-left: 25px;
-					padding: 5px;
-					color: white;
-					font-size: 9px;
-					font-weight: normal;
-					vertical-align: middle;
-				}
-				
-				.size::after
-				{
-					content: " bytes";
-				}
-				
-				#izda
-				{
-					float: left;
-					width: 35%;
-					vertical-align: middle;
-					text-align: center;
-					position: fixed;
-					height: 98%;
-					border-right: 2px solid white;
-				}
-				
-				#izda img
-				{
-					display: inline;
-					margin: auto;
-					text-align: center;
-					vertical-align: middle;
-					width: 45%;
-				}
-				
-				#dcha
-				{
-					float: right;
-					width: 45%;
-					margin-right: 15%;
-					height: 100%;
-				}
-				
-				#footer
-				{
-					clear: both;
-				}
-				
-				
-				/* Papelera */
-				.papelera
-				{
-					display: inline-block;
-					float: right;
-					width: 21px;
-					height: 100%;
-					background-size: cover;
-					background-image: url(data:application/file;base64,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%3D%3D);
-				}
-				
-				
-				
-				/* Spinner */
-				.spinner {
-				  width: 100px;
-				  height: 100px;
-				  background-color: white;
-
-				  margin: 100px auto;
-				  -webkit-animation: rotateplane 1.2s infinite ease-in-out;
-				  animation: rotateplane 1.2s infinite ease-in-out;
-				}
-
-				@-webkit-keyframes rotateplane {
-				  0% { -webkit-transform: perspective(120px) }
-				  50% { -webkit-transform: perspective(120px) rotateY(180deg) }
-				  100% { -webkit-transform: perspective(120px) rotateY(180deg)  rotateX(180deg) }
-				}
-
-				@keyframes rotateplane {
-				  0% { 
-					transform: perspective(120px) rotateX(0deg) rotateY(0deg);
-					-webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg) 
-				  } 50% { 
-					transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
-					-webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg) 
-				  } 100% { 
-					transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
-					-webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
-				  }
-				}
-		</style>
+		<link rel="stylesheet" href="estilos.css" type="text/css" />
 		<script language="javascript" src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
 		<script language="javascript">
 			var borrar = function(a)
@@ -156,16 +14,16 @@
 						$(a).parent().hide("normal");
 					}
 				});
-				
+
 				return false;
 			};
-			
+
 			$(function()
 			{
 				$.getJSON("/get_list", function(elementos)
 				{
 					var lista = "";
-					
+
 					for (var i = 0; i < elementos.length; ++i)
 					{
 						lista += "<li id=\"" + elementos[i].id
@@ -181,12 +39,12 @@
 							  +  "onclick=\"borrar(this); return false;\""
 							  +  ">&nbsp;</a></li>";
 					}
-					
+
 					$(".spinner").remove();
 					$("#izda").css("display", "block");
 					$("#dcha").css("display", "block");
 					$("body").css("overflow", "auto");
-					$("#lista").html(lista);
+					$("#listado").html(lista);
 				});
 			});
 		</script>
@@ -195,9 +53,19 @@
 		<div class="spinner"></div>
 		<div id="izda" style="display:none;">
 			<img src="http://www.apfelwerk.de/htdocs/wordpress/wp-content/uploads/2012/08/dropbox.png" alt="Dropbox logo" />
+			<ul class="lista">
+				<li><a href="/">Subida autom&aacute;tica</a></li>
+				<li><a href="/list">Listado</a></li>
+				<li><a href="/driveupload">Subir a Drive</a></li>
+				<li><a href="/drivelist">Listado de Drive</a></li>
+				<li><a href="/dropboxupload">Subir a Dropbox</a></li>
+				<li><a href="/dropboxlist">Listado de Dropbox</a></li>
+				<li><a href="/driveconfig">Configurar Drive (solo la primera vez)</a></li>
+				<li><a href="/dropboxconfig">Configurar Dropbox (solo la primera vez)</a></li>
+			</ul>
 		</div>
 		<div id="dcha" style="display:none;">
-			<ul id="lista">
+			<ul class="lista" id="listado">
 			</ul>
 		</div>
 		<div id="footer"></div>
