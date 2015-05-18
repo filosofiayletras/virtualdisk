@@ -240,13 +240,22 @@ def getDriveList():
 	#Procesamos los resultados, almacenando la información relevante
 	respuesta = []
 	for elemento in resultados:
-		respuesta.extend([{
-			'id': elemento['id'],
-			'filename': elemento['title'],
-			'link': elemento['alternateLink'],
-			'size': elemento['fileSize'],
-			'remove_link': 'remove_drive_file?id=' + elemento['id']
-		}])
+		try:
+			respuesta.extend([{
+				'id': elemento['id'],
+				'filename': elemento['title'],
+				'link': elemento['alternateLink'],
+				'size': elemento['fileSize'],
+				'remove_link': 'remove_drive_file?id=' + elemento['id']
+			}])
+		except:
+			respuesta.extend([{
+				'id': elemento['id'],
+				'filename': elemento['title'],
+				'link': elemento['alternateLink'],
+				'size': 0,
+				'remove_link': 'remove_drive_file?id=' + elemento['id']
+			}])
 
 	return json.dumps(respuesta)
 
