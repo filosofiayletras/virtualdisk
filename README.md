@@ -23,3 +23,4 @@ Para testear el protecto acceda a la dirección **http://virtualdisksd-empiezaap
 Puede usar los datos de usuario: 
  user: sdgrupo1@gmail.com
  pass: basura123
+Para comprobar el correcto funcionamiento de nuestra API, añadimos este video donde se muestras las distintas funcionalidades de la misma. **http://youtu.be/xDKPkA80NSs/**
