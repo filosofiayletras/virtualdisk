@@ -19,8 +19,8 @@ Centralizar todos los servicios de almacenamiento en la nube del usuario en una 
 
 ## Testeo del proyecto ##
 
-Para testear el protecto acceda a la dirección **http://virtualdisksd-empiezaaprogramar.c9.io/** y no olvide leer la memoria, prestando especial atención al punto 10.
+Para testear el protecto acceda a la dirección **http://virtualdisksd-empiezaaprogramar.c9.io** y no olvide leer la memoria, prestando especial atención al punto 10.
 Puede usar los datos de usuario: 
  user: sdgrupo1@gmail.com
  pass: basura123
-Para comprobar el correcto funcionamiento de nuestra API, añadimos este video donde se muestras las distintas funcionalidades de la misma. **http://youtu.be/xDKPkA80NSs/**
+Para comprobar el correcto funcionamiento de nuestra API, añadimos este video donde se muestras las distintas funcionalidades de la misma. **http://youtu.be/xDKPkA80NSs**
